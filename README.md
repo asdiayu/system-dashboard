@@ -1,8 +1,6 @@
 # System Dashboard All-in-One
 
-Dashboard monitoring server real-time berbasis Flask.
-
-![Port Tab](screenshots/port-tab.png)
+Dashboard monitoring server real-time berbasis Flask. 5 tab: Port, Firewall, System, Performance, Network.
 
 ## Fitur
 
@@ -13,25 +11,6 @@ Dashboard monitoring server real-time berbasis Flask.
 | 📊 System | CPU (real-time delta), RAM, Disk, Load Average, Suhu, Disk Analyzer drill-down |
 | ⚡ Performance | CPU hogs, Memory top, Services control |
 | 🌐 Network | Bandwidth per interface (grup: Fisik/VPN/Docker), Connection states |
-
-## Screenshots
-
-### 🔌 Port Monitor
-![Port](screenshots/port-tab.png)
-
-### 🛡️ Firewall
-![Firewall](screenshots/firewall-tab.png)
-
-### 📊 System
-![System Specs](screenshots/system-tab-specs.png)
-![System Disk Analyzer](screenshots/system-tab-disk.png)
-
-### ⚡ Performance
-![Performance](screenshots/performance-tab.png)
-
-### 🌐 Network
-![Network](screenshots/network-tab-top.png)
-![Network Docker](screenshots/network-tab-bottom.png)
 
 ## Teknis
 
@@ -57,13 +36,11 @@ Buka `http://localhost:5001`
 ## Struktur
 
 ```
-port-kill-web/
 ├── app.py              # Entry point: routes, scanner loop, SSE stream
 ├── templates/index.html
 ├── static/
 │   ├── style.css
 │   └── app.js
-├── screenshots/        # Screenshot preview
 └── modules/
     ├── state.py        # Shared state & threading locks
     ├── helpers.py      # run(), get_specs()

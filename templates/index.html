@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+  <title>System Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="hl">
+    <div class="icon-box">⬡</div>
+    <div><h1>Dashboard <small id="hostLabel">· PC</small></h1></div>
+  </div>
+  <div class="status-badge">
+    <div style="display:flex;align-items:center;gap:.35rem">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusLabel">connected</span>
+    </div>
+    <span class="viewer-count" id="viewerCount"></span>
+  </div>
+</div>
+
+<div class="tabs" id="tabNav">
+  <button class="tab active" data-tab="ports">🔌 Port</button>
+  <button class="tab" data-tab="firewall">🛡️ Firewall</button>
+  <button class="tab" data-tab="system">📊 System</button>
+  <button class="tab" data-tab="performance">⚡ Performance</button>
+  <button class="tab" data-tab="network">🌐 Network</button>
+</div>
+
+<!-- PORTS -->
+<div class="tab-content active" id="tab-ports">
+  <div class="card">
+    <div class="card-title">Port Monitor</div>
+    <div class="card-grid" id="portSummary">
+      <div class="stat-card"><div class="val" id="sTotal">-</div><div class="lbl">Total</div></div>
+      <div class="stat-card"><div class="val" id="sNode">-</div><div class="lbl">Node.js</div></div>
+      <div class="stat-card"><div class="val" id="sPython">-</div><div class="lbl">Python</div></div>
+      <div class="stat-card"><div class="val" id="sOther">-</div><div class="lbl">Lainnya</div></div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Port</th><th>PID</th><th>Proses</th><th>Group</th><th>Aktivitas</th><th>Sejak</th><th></th></tr></thead>
+      <tbody id="portList"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FIREWALL -->
+<div class="tab-content" id="tab-firewall">
+  <div class="card">
+    <div class="fw-status">
+      <span class="fw-badge" id="fwBadge">⏳ loading..</span>
+      <span style="font-size:.78rem;color:#6c7086" id="fwCount">0 rules</span>
+    </div>
+    <div class="fw-rules-wrap" id="fwRules"><div style="color:#6c7086;font-size:.82rem">Memuat...</div></div>
+    <div class="fw-input-group">
+      <input class="fw-input" id="fwPortInput" placeholder="Port (contoh: 443 atau 3000/tcp)" onkeydown="if(event.key==='Enter')fwAllow()">
+      <button class="fw-btn allow" onclick="fwAllow()">Allow</button>
+      <button class="fw-btn deny" onclick="fwDeny()">Deny</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYSTEM -->
+<div class="tab-content" id="tab-system">
+  <div class="card">
+    <div class="card-title">Spesifikasi PC</div>
+    <div class="sys-grid" id="specsGrid">
+      <div class="stat-card"><div class="val" id="spCPU">-</div><div class="lbl">CPU</div><div class="hint" id="spCPUCores"></div></div>
+      <div class="stat-card"><div class="val" id="spGPU">-</div><div class="lbl">GPU</div></div>
+      <div class="stat-card"><div class="val" id="spRAM">-</div><div class="lbl">RAM</div></div>
+      <div class="stat-card"><div class="val" id="spDisk">-</div><div class="lbl">Disk</div></div>
+      <div class="stat-card"><div class="val" id="spOS">-</div><div class="lbl">OS</div></div>
+      <div class="stat-card"><div class="val" id="spKernel">-</div><div class="lbl">Kernel</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">System Overview</div>
+    <div class="sys-grid">
+      <div class="stat-card"><div class="val" id="sysHost">-</div><div class="lbl">Hostname</div></div>
+      <div class="stat-card"><div class="val" id="sysUptime">-</div><div class="lbl">Uptime</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">CPU</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+      <span style="font-size:.82rem;color:#9ca0b0">Load Average</span>
+      <span style="font-size:.82rem;color:#e6e9ef;font-weight:500" id="cpuLoad">-</span>
+    </div>
+    <div class="load-badge" id="loadBadge" style="margin-top:6px">
+      <div class="lb-item"><span class="lb-num" id="l1">-</span><span class="lb-label">1m</span><div class="lb-dot" id="d1"></div></div>
+      <span class="lb-sep">·</span>
+      <div class="lb-item"><span class="lb-num" id="l5">-</span><span class="lb-label">5m</span><div class="lb-dot" id="d5"></div></div>
+      <span class="lb-sep">·</span>
+      <div class="lb-item"><span class="lb-num" id="l15">-</span><span class="lb-label">15m</span><div class="lb-dot" id="d15"></div></div>
+    </div>
+    <div class="metric-row" style="margin-top:.5rem"><span class="ml">Usage</span><span class="mv" id="cpuUsage">-</span></div>
+    <div class="pbar-wrap"><div class="pbar used green" id="cpuBar" style="width:0%"></div><div class="pbar free"></div></div>
+    <div class="metric-row"><span class="ml">Idle</span><span class="mv" id="cpuIdle">-</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:.5rem">
+      <span style="font-size:.72rem;color:#484f58" id="cpuCores"></span>
+      <span style="font-size:.8rem" id="cpuTemp"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Memory</div>
+    <div class="metric-row"><span class="ml">Used</span><span class="mv" id="ramUsed">-</span></div>
+    <div class="metric-row"><span class="ml">Total</span><span class="mv" id="ramTotal">-</span></div>
+    <div class="metric-row"><span class="ml">Available</span><span class="mv" id="ramAvail" style="color:#7ee787">-</span></div>
+    <div class="pbar-wrap" style="margin-top:.4rem"><div class="pbar used green" id="ramBar" style="width:0%"></div><div class="pbar free"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Disk</div>
+    <div class="metric-row"><span class="ml">Used</span><span class="mv" id="diskUsed">-</span></div>
+    <div class="metric-row"><span class="ml">Total</span><span class="mv" id="diskTotal">-</span></div>
+    <div class="metric-row"><span class="ml">Free</span><span class="mv" id="diskFree" style="color:#7ee787">-</span></div>
+    <div class="pbar-wrap" style="margin-top:.4rem"><div class="pbar used green" id="diskBar" style="width:0%"></div><div class="pbar free"></div></div>
+  </div>
+  <div class="card sys-full">
+    <div class="card-title">📂 Disk Analyzer <span style="font-weight:400;color:#484f58;text-transform:none;font-size:.7rem" id="diskAnalyzerStatus"></span></div>
+    <div id="diskAnalyzerContent"><div style="color:#6c7086;font-size:.82rem">Memuat...</div></div>
+  </div>
+</div>
+
+<!-- PERFORMANCE -->
+<div class="tab-content" id="tab-performance">
+  <div class="card">
+    <div class="card-title">🔥 CPU Hogs (Top 5)</div>
+    <div id="cpuHogsList"><div style="color:#6c7086;font-size:.82rem">Menunggu data...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📌 Memory — Top Processes</div>
+    <div id="memTopProcs"><div style="color:#6c7086;font-size:.82rem">Menunggu data...</div></div>
+    <div style="margin-top:.6rem;border-top:1px solid #1e2330;padding-top:.6rem">
+      <div class="metric-row"><span class="ml">Buffers</span><span class="mv" id="memBuffers">-</span></div>
+      <div class="metric-row"><span class="ml">Cached</span><span class="mv" id="memCached">-</span></div>
+      <div style="margin-top:.5rem"><button class="mem-btn" onclick="clearMemory()">🧹 Clear Memory Cache</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚙️ Services</div>
+    <div id="servicesList"><div style="color:#6c7086;font-size:.82rem">Menunggu data...</div></div>
+  </div>
+</div>
+
+<!-- NETWORK -->
+<div class="tab-content" id="tab-network">
+  <div class="card">
+    <div class="card-title">🌐 Connections</div>
+    <div class="conn-grid" id="connGrid">
+      <div class="conn-card"><div class="cc-val" style="color:#3fb950" id="connEst">-</div><div class="cc-lbl">Established</div></div>
+      <div class="conn-card"><div class="cc-val" style="color:#d29922" id="connTW">-</div><div class="cc-lbl">Time Wait</div></div>
+      <div class="conn-card"><div class="cc-val" style="color:#58a6ff" id="connListen">-</div><div class="cc-lbl">Listen</div></div>
+      <div class="conn-card"><div class="cc-val" style="color:#e6e9ef" id="connTotal">-</div><div class="cc-lbl">Total</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📶 Interface Bandwidth</div>
+    <div id="interfaceList"><div style="color:#6c7086;font-size:.82rem">Menunggu data...</div></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
